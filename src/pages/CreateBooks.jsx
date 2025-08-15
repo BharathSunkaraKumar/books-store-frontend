@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 import RingSpinner from '../components/spinner';
+import { useSnackbar } from 'notistack';
 
 const CreateBooks = () => {
   const [title, setTitle] = useState('');
@@ -10,6 +11,8 @@ const CreateBooks = () => {
   const [publishYear, setPublishyear] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const {enqueueSnackbar} = useSnackbar()
+
 
   const handleSubmit = () => {
     const data = {
@@ -22,12 +25,14 @@ const CreateBooks = () => {
       .post(`http://localhost:5000/books`, data)
       .then(() => {
         setLoading(false)
+        enqueueSnackbar("Book created successfully", {variant: 'success'})
         navigate('/')
       })
       .catch((err) => {
         setLoading(false)
         console.log(err)
-        alert('somting went wrong, please check the console')
+        enqueueSnackbar("error", {variant: 'error'})
+        // alert('somting went wrong, please check the console')
       })
   }
   return (
@@ -49,7 +54,7 @@ const CreateBooks = () => {
             <input type="text" value={publishYear} onChange={(e) => setPublishyear(e.target.value)} className='border-2 border-gray-500 px-4 py-2 w-full'/>
           </div>
           
-            <button className='p-2 bg-sky-300 m-8' onClick={handleSubmit}>save</button>
+            <button className='p-2 bg-sky-300 m-8 hover:bg-sky-400 transition duration-300' onClick={handleSubmit}>save</button>
           
         </div>
       )}
